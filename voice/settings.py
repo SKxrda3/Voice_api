@@ -30,7 +30,13 @@ SECRET_KEY = "django-insecure-1qorj$d^6t$)yw8q*s01ft^2!%28%0y@5upw7t*_p*&xdxzu$r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = [
+    'voice-api-5-4ym0.onrender.com',  # 👈 add this
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
