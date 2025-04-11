@@ -25,19 +25,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-1qorj$d^6t$)yw8q*s01ft^2!%28%0y@5upw7t*_p*&xdxzu$r"
+# SECRET_KEY = "django-insecure-1qorj$d^6t$)yw8q*s01ft^2!%28%0y@5upw7t*_p*&xdxzu$r"
+
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-1qorj$d^6t$)yw8q*s01ft^2!%28%0y@5upw7t*_p*&xdxzu$r")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = False
 
-# ALLOWED_HOSTS = []
+DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = [
-    'voice-api-5-4ym0.onrender.com',  # 👈 add this
-    'localhost',
-    '127.0.0.1'
-]
+# # ALLOWED_HOSTS = []
 
+# ALLOWED_HOSTS = [
+#     'voice-api-5-4ym0.onrender.com',  # 👈 add this
+#     'localhost',
+#     '127.0.0.1'
+# ]
+
+
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # Application definition
 
