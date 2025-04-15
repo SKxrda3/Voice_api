@@ -44,35 +44,64 @@ from .serializers import ActionSerializer, KeywordSerializer, QuestionSerializer
 #         return DRFResponse({"error": "Keyword not found."}, status=404)
 
 
+# @api_view(['POST'])
+
+# def get_question_from_phrase(request):
+#     phrase = request.data.get('phrase', '').lower()
+#     try:  
+#         keyword = Keyword.objects.get(phrase__iexact=phrase)
+#         action_name = keyword.action.name
+#         question = keyword.questions.first().text if keyword.questions.exists() else "No question found."
+
+#         return DRFResponse({
+#             "keyword": keyword.phrase,
+#             "action": action_name,
+#             "question": question
+#         })
+#     except Keyword.DoesNotExist:
+#         return DRFResponse({"error": "Keyword not found."}, status=404)
+
 @api_view(['POST'])
-
 def get_question_from_phrase(request):
-    print("🔥 View hit")  # Check if this prints
+    print("🔥 View hit")
 
+    # Debugging request content
+    print("📦 request.content_type:", request.content_type)
     try:
-        print("DEBUG DATA:", request.data)
-        print("Raw body:", request.body)
+        print("📨 request.data:", request.data)
+        print("📨 Raw body:", request.body.decode('utf-8'))
     except Exception as e:
-        print("❌ Error while printing data:", str(e))
+        print("❌ Error while reading body:", str(e))
 
-        
-    print("DEBUG DATA:", request.data)
-    # print(request.data)
-    print("Raw body:", request.body)
-    # print("Parsed data:", request.data)
-    phrase = request.data.get('phrase', '').lower()
-    try:  
+    # Extract and validate phrase
+    phrase = request.data.get('phrase', '').strip().lower()
+    if not phrase:
+        return DRFResponse(
+            {"error": "Missing 'phrase' in request body."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Fetch keyword and related data
+    try:
         keyword = Keyword.objects.get(phrase__iexact=phrase)
         action_name = keyword.action.name
-        question = keyword.questions.first().text if keyword.questions.exists() else "No question found."
+        question = (
+            keyword.questions.first().text if keyword.questions.exists()
+            else "No question found."
+        )
 
         return DRFResponse({
             "keyword": keyword.phrase,
             "action": action_name,
             "question": question
         })
+
     except Keyword.DoesNotExist:
-        return DRFResponse({"error": "Keyword not found."}, status=404)
+        return DRFResponse(
+            {"error": "Keyword not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
 
 @api_view(['POST'])  # Change to POST
 def get_response_from_reply(request):
