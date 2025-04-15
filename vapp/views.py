@@ -77,6 +77,10 @@ class GetQuestionFromPhraseView(APIView):
     parser_classes = [JSONParser]
 
     def post(self, request):
+        print("🔥 View hit")
+        print("📦 request.content_type:", request.content_type)
+        print("📨 request.data:", request.data)  # Log the incoming data
+        
         phrase = request.data.get('phrase', '').strip().lower()
         if not phrase:
             return DRFResponse(
@@ -103,7 +107,6 @@ class GetQuestionFromPhraseView(APIView):
                 {"error": "Keyword not found."},
                 status=status.HTTP_404_NOT_FOUND
             )
-
 # @api_view(['POST'])  # Change to POST
 # def get_response_from_reply(request):
 #     user_reply = request.data.get('phrase', '').lower()  
