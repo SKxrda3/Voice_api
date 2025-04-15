@@ -58,9 +58,7 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 #     'localhost',
 #     '127.0.0.1'
 # ]
-
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'voice-api-3-0er8.onrender.com,localhost,127.0.0.1').split(',')
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
