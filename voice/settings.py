@@ -17,6 +17,8 @@ from dotenv import load_dotenv
 import pymysql
 pymysql.install_as_MySQLdb()
 BASE_DIR = Path(__file__).resolve().parent.parent
+from corsheaders.defaults import default_headers
+
 
 
 load_dotenv(os.path.join(BASE_DIR, '.env'))
@@ -220,3 +222,9 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
     ]
 }
+
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'content-type',
+    'authorization',
+]

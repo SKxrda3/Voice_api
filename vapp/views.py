@@ -74,19 +74,13 @@ class GetQuestionFromPhraseView(APIView):
     parser_classes = [JSONParser, FormParser, MultiPartParser]
 
     def post(self, request):
-        print("🔥 View hit")
-       
-        print("📦 request.content_type:", request.content_type)
-        print("📨 request.data:", request.data)
-      
         phrase = request.data.get('phrase', '').strip().lower()
         if not phrase:
             return DRFResponse(
                 {"error": "Missing 'phrase' in request body."},
                 status=status.HTTP_400_BAD_REQUEST
-            )
+            )   
 
-        
         try:
             keyword = Keyword.objects.get(phrase__iexact=phrase)
             action_name = keyword.action.name
@@ -103,7 +97,8 @@ class GetQuestionFromPhraseView(APIView):
 
         except Keyword.DoesNotExist:
             return DRFResponse(
-                {"error": "Keyword not found."},status=status.HTTP_404_NOT_FOUND
+                {"error": "Keyword not found."},
+                status=status.HTTP_404_NOT_FOUND
             )
 
 # @api_view(['POST'])  # Change to POST
