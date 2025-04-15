@@ -1,0 +1,40 @@
+{
+    "actions": {
+        "Unlock": ["unlock", "open lock", "disable lock", "unlatch"],
+        "Lock": ["lock", "secure lock", "close lock"],
+        "Check Lock Status": ["status", "is the door locked", "is the lock engaged"],
+        "Set Auto Lock Timer": ["set auto lock", "schedule lock", "timer lock"],
+        "Change Lock Mode": ["switch lock mode", "change security level", "adjust settings"],
+        "Update Lock Software": ["update firmware", "system upgrade", "software update"],
+        "Reset Lock": ["reset lock", "factory reset", "restart system"],
+        "Enable Auto Lock": ["auto lock on", "activate automatic locking"],
+        "Disable Auto Lock": ["auto lock off", "deactivate automatic locking"],
+        "Initiate Lockdown Mode": ["lockdown mode", "emergency lockdown"],
+        "Disable Lockdown Mode": ["exit lockdown", "cancel emergency mode"]
+    },
+    "responses": {
+        "unlock": "Door is now unlocked.",
+        "open lock": "Opening the lock...",
+        "disable lock": "Lock has been disabled.",
+        "unlatch": "Unlatching the door...",
+        "lock": "Securing the door...",
+        "secure lock": "Locking mechanism engaged.",
+        "close lock": "Closing the lock...",
+        "is the door locked": "Verifying if the door is locked...",
+        "is the lock engaged": "Checking if the lock is engaged..."
+    },
+    "follow_up_questions": {
+        "Unlock": "What do you want to unlock? A door, a lock, or something else?",
+        "Lock": "What do you want to lock? A door, a cabinet, a lock or something else?",
+        "Check Lock Status": "Which lock status do you want to check? Main door, back door, front door, or another lock?",
+        "Set Auto Lock Timer": "How long should the lock remain open before auto-locking? 10 seconds, 30 seconds, or custom?",
+        "Change Lock Mode": "Which security mode do you want to switch to? Standard, high-security, or custom?",
+        "Update Lock Software": "Do you want to update software for all locks or a specific one?",
+        "Reset Lock": "Are you sure you want to reset the lock? This will erase all settings.",
+        "Enable Auto Lock": "For which lock do you want to enable auto-lock? Main door, safe, or another?",
+        "Disable Auto Lock": "For which lock do you want to disable auto-lock? Main door, safe, or another?",
+        "Initiate Lockdown Mode": "Are you sure you want to initiate lockdown mode? This will restrict all access.",
+        "Disable Lockdown Mode": "Are you sure you want to exit lockdown mode and restore normal access?"
+        
+    }
+}

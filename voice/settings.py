@@ -13,8 +13,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 
 import os
+from dotenv import load_dotenv
 import pymysql
 pymysql.install_as_MySQLdb()
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,6 +40,10 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-1qorj$d^6t$)yw
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
+# CSRF_TRUSTED_ORIGINS = ['https://voice-api-3-0er8.onrender.com']
+# CSRF_COOKIE_SECURE = False  # Disable CSRF for testing, be cautious!
+
+
 # # ALLOWED_HOSTS = []
 
 # ALLOWED_HOSTS = [
@@ -47,7 +57,7 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 #     '127.0.0.1'
 # ]
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'voice-api-5-4ym0.onrender.com,localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'voice-api-3-0er8.onrender.com,localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -61,9 +71,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "vapp",
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -71,8 +83,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    
 ]
-
+CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = "voice.urls"
 
 TEMPLATES = [
@@ -104,17 +117,48 @@ WSGI_APPLICATION = "voice.wsgi.application"
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'webinfinity_ai',
+#         'USER': 'webinfinity_ajitnew',
+#         'PASSWORD': 'Ajit@123#',
+#         'HOST': '31.170.162.152',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+        
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.getenv('DB_NAME', 'webinfinity_ai'),
+#         'USER': os.getenv('DB_USER', 'webinfinity_ajitnew'),
+#         'PASSWORD': os.getenv('DB_PASSWORD', 'Ajit@123#'),
+#         'HOST': os.getenv('DB_HOST', '31.170.162.152'),
+#         'PORT': os.getenv('DB_PORT', '3306'),
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'voice',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
+
+print("DB_HOST:", os.getenv('DB_HOST'))
 
 
 # Password validation
