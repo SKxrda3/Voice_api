@@ -215,6 +215,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
@@ -230,5 +231,5 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://voice-api-3-0er8.onrender.com/api/get_response_from_phrase/"
+    'https://voice-api-3-0er8.onrender.com',  # Correct: Only the base domain is allowed.
 ]
