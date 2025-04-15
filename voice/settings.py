@@ -145,7 +145,6 @@ WSGI_APPLICATION = "voice.wsgi.application"
 #         },
 #     }
 # }
-import os
 
 DATABASES = {
     'default': {
@@ -159,7 +158,7 @@ DATABASES = {
 }
 
 print("DB_HOST:", os.getenv('DB_HOST'))
-
+print("DB connected")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
