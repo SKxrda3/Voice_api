@@ -11,6 +11,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 # @api_view(['GET'])
 # def get_response_from_reply(request):
@@ -71,7 +74,7 @@ from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 #         )
 
 class GetQuestionFromPhraseView(APIView):
-    parser_classes = [JSONParser, FormParser, MultiPartParser]
+    parser_classes = [JSONParser]
 
     def post(self, request):
         phrase = request.data.get('phrase', '').strip().lower()
