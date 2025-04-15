@@ -228,3 +228,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'content-type',
     'authorization',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://voice-api-3-0er8.onrender.com/api/get_response_from_phrase/"
+]
