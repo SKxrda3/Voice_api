@@ -1,3 +1,4 @@
+import json
 from rest_framework.decorators import api_view
 from rest_framework.response import Response as DRFResponse
 from .models import Keyword
@@ -79,14 +80,32 @@ class GetQuestionFromPhraseView(APIView):
     def post(self, request):
         print("🔥 View hit")
         print("📦 request.content_type:", request.content_type)
-        print("📨 request.data:", request.data)  # Log the incoming data
-        
-        phrase = request.data.get('phrase', '').strip().lower()
+        print("📨 request.data:", request.data)
+        print("🧾 request.body (raw):", request.body)
+
+        # Try to get phrase from request.data first
+        phrase = request.data.get('phrase')
+
+        # If request.data is empty, try to parse request.body manually
+        if not phrase:
+            try:
+                body_unicode = request.body.decode('utf-8')
+                body_data = json.loads(body_unicode)
+                phrase = body_data.get('phrase', '')
+            except Exception as e:
+                print("❌ Failed to parse JSON from body:", str(e))
+                return DRFResponse(
+                    {"error": "Invalid JSON or missing 'phrase' in request body."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
         if not phrase:
             return DRFResponse(
                 {"error": "Missing 'phrase' in request body."},
                 status=status.HTTP_400_BAD_REQUEST
-            )   
+            )
+
+        phrase = phrase.strip().lower()
 
         try:
             keyword = Keyword.objects.get(phrase__iexact=phrase)
