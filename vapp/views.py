@@ -9,6 +9,7 @@ from .serializers import ActionSerializer, KeywordSerializer, QuestionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
 
 # @api_view(['GET'])
@@ -91,6 +92,8 @@ from rest_framework import status
 #         )
 
 class GetQuestionFromPhraseView(APIView):
+    parser_classes = [JSONParser, FormParser, MultiPartParser]
+
     def post(self, request):
         print("🔥 View hit")
 
