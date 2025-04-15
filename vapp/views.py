@@ -13,27 +13,6 @@ from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
 
 # @api_view(['GET'])
-# def ai_response_view(request):
-#     phrase = request.GET.get('phrase', '').lower()
-    
-#     try:
-#         keyword = Keyword.objects.get(phrase__iexact=phrase)
-#         action_name = keyword.action.name
-#         question_text = keyword.questions.first().text if keyword.questions.exists() else "No question found."
-#         response_text = keyword.responses.first().text if keyword.responses.exists() else "No response found."
-
-#         data = {
-#             "keyword": keyword.phrase,
-#             "action": action_name,
-#             "question": question_text,
-#             "response": response_text,
-#         }
-#         return DRFResponse(data)
-    
-#     except Keyword.DoesNotExist:
-#         return DRFResponse({"error": "Keyword not found."}, status=404)
-
-# @api_view(['GET'])
 # def get_response_from_reply(request):
 #     user_reply = request.GET.get('phrase', '').lower()
 
@@ -96,15 +75,9 @@ class GetQuestionFromPhraseView(APIView):
 
     def post(self, request):
         print("🔥 View hit")
-
         # Debugging request content
         print("📦 request.content_type:", request.content_type)
-        try:
-            print("📨 request.data:", request.data)
-            print("📨 Raw body:", request.body.decode('utf-8'))
-        except Exception as e:
-            print("❌ Error while reading body:", str(e))
-
+        print("📨 request.data:", request.data)
         # Extract and validate phrase
         phrase = request.data.get('phrase', '').strip().lower()
         if not phrase:
@@ -130,8 +103,7 @@ class GetQuestionFromPhraseView(APIView):
 
         except Keyword.DoesNotExist:
             return DRFResponse(
-                {"error": "Keyword not found."},
-                status=status.HTTP_404_NOT_FOUND
+                {"error": "Keyword not found."},status=status.HTTP_404_NOT_FOUND
             )
 
 # @api_view(['POST'])  # Change to POST
