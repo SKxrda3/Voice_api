@@ -10,6 +10,8 @@ from .serializers import ActionSerializer, KeywordSerializer, QuestionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
 import logging
@@ -74,58 +76,56 @@ logger = logging.getLogger(__name__)
 #             status=status.HTTP_404_NOT_FOUND
 #         )
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GetQuestionFromPhraseView(APIView):
     parser_classes = [JSONParser]
 
     def post(self, request):
         print("🔥 View hit")
-        print("📦 request.content_type:", request.content_type)
-        print("📨 request.data:", request.data)
-        print("🧾 request.body (raw):", request.body)
+        print("📦 Content-Type:", request.content_type)
+        print("🧾 Raw Body:", request.body)
 
-        # Try to get phrase from request.data first
-        phrase = request.data.get('phrase')
+        data = {}
 
-        # If request.data is empty, try to parse request.body manually
-        if not phrase:
+        # Attempt parsing from request.data
+        if hasattr(request, 'data') and isinstance(request.data, dict):
+            data = request.data
+            print("✅ Parsed from request.data:", data)
+
+        # Fallback: parse raw body
+        if not data:
             try:
-                body_unicode = request.body.decode('utf-8')
-                body_data = json.loads(body_unicode)
-                phrase = body_data.get('phrase', '')
+                data = json.loads(request.body.decode('utf-8'))
+                print("🔄 Parsed from raw body:", data)
             except Exception as e:
-                print("❌ Failed to parse JSON from body:", str(e))
-                return DRFResponse(
-                    {"error": "Invalid JSON or missing 'phrase' in request body."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                print("❌ Failed to parse JSON:", str(e))
+                return DRFResponse({"error": "Invalid JSON"}, status=400)
 
+        phrase = data.get('phrase', '').strip().lower()
         if not phrase:
-            return DRFResponse(
-                {"error": "Missing 'phrase' in request body."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        phrase = phrase.strip().lower()
+            return DRFResponse({"error": "Missing 'phrase' in request."}, status=400)
 
         try:
             keyword = Keyword.objects.get(phrase__iexact=phrase)
             action_name = keyword.action.name
-            question = (
-                keyword.questions.first().text if keyword.questions.exists()
-                else "No question found."
-            )
-
+            question = keyword.questions.first().text if keyword.questions.exists() else "No question found."
             return DRFResponse({
                 "keyword": keyword.phrase,
                 "action": action_name,
                 "question": question
             })
-
         except Keyword.DoesNotExist:
-            return DRFResponse(
-                {"error": "Keyword not found."},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return DRFResponse({"error": "Keyword not found."}, status=404)
+
+
+
+
+
+
+
+
+
+
 # @api_view(['POST'])  # Change to POST
 # def get_response_from_reply(request):
 #     user_reply = request.data.get('phrase', '').lower()  
