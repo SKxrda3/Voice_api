@@ -145,29 +145,63 @@ class GetQuestionFromPhraseView(APIView):
 #             return Response({"error": "Keyword not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
+# class GetResponseFromReply(APIView):
+#     def post(self, request):
+#         try:
+#             user_reply = request.data.get('phrase', '').strip().lower()
+#         except Exception:
+#             return DRFResponse({"error": "Invalid JSON."}, status=400, content_type="application/json")
+
+#         if not user_reply:
+#             return DRFResponse({"error": "Missing 'phrase'."}, status=400, content_type="application/json")
+
+#         try:
+#             keyword = Keyword.objects.get(phrase__iexact=user_reply)
+#             response = (
+#                 keyword.responses.first().text if keyword.responses.exists()
+#                 else "No response found."
+#             )
+#             return DRFResponse({
+#                 "keyword": keyword.phrase,
+#                 "response": response
+#             }, content_type="application/json")
+
+#         except Keyword.DoesNotExist:
+#             return DRFResponse({"error": "Keyword not found."}, status=404, content_type="application/json")
+
+
 class GetResponseFromReply(APIView):
     def post(self, request):
         try:
             user_reply = request.data.get('phrase', '').strip().lower()
-        except Exception:
-            return DRFResponse({"error": "Invalid JSON."}, status=400, content_type="application/json")
+            
+            if not user_reply:
+                return DRFResponse(
+                    {"error": "Missing or empty 'phrase' in request body."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-        if not user_reply:
-            return DRFResponse({"error": "Missing 'phrase'."}, status=400, content_type="application/json")
+            try:
+                keyword = Keyword.objects.get(phrase__iexact=user_reply)
+                response = keyword.responses.first().text if keyword.responses.exists() else "No response found."
+                
+                return DRFResponse({
+                    "keyword": keyword.phrase,
+                    "response": response
+                })
 
-        try:
-            keyword = Keyword.objects.get(phrase__iexact=user_reply)
-            response = (
-                keyword.responses.first().text if keyword.responses.exists()
-                else "No response found."
+            except Keyword.DoesNotExist:
+                return DRFResponse(
+                    {"error": "Keyword not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+        except Exception as e:
+            return DRFResponse(
+                {"error": f"An error occurred: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST
             )
-            return DRFResponse({
-                "keyword": keyword.phrase,
-                "response": response
-            }, content_type="application/json")
 
-        except Keyword.DoesNotExist:
-            return DRFResponse({"error": "Keyword not found."}, status=404, content_type="application/json")
 
 @api_view(['POST'])
 def add_action(request):
