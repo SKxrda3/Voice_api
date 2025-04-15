@@ -1,4 +1,6 @@
 import json
+from django.http import JsonResponse
+from django.views import View
 from rest_framework.decorators import api_view
 from rest_framework.response import Response as DRFResponse
 from .models import Keyword
@@ -76,48 +78,71 @@ logger = logging.getLogger(__name__)
 #             status=status.HTTP_404_NOT_FOUND
 #         )
 
-@method_decorator(csrf_exempt, name='dispatch')
-class GetQuestionFromPhraseView(APIView):
-    parser_classes = [JSONParser]
+# @method_decorator(csrf_exempt, name='dispatch')
+# class GetQuestionFromPhraseView(APIView):
+#     parser_classes = [JSONParser]
 
+#     def post(self, request):
+#         print("🔥 View hit")
+#         print("📦 Content-Type:", request.content_type)
+#         print("🧾 Raw Body:", request.body)
+
+#         data = {}
+
+#         # Attempt parsing from request.data
+#         if hasattr(request, 'data') and isinstance(request.data, dict):
+#             data = request.data
+#             print("✅ Parsed from request.data:", data)
+
+#         # Fallback: parse raw body
+#         if not data:
+#             try:
+#                 data = json.loads(request.body.decode('utf-8'))
+#                 print("🔄 Parsed from raw body:", data)
+#             except Exception as e:
+#                 print("❌ Failed to parse JSON:", str(e))
+#                 return DRFResponse({"error": "Invalid JSON"}, status=400)
+
+#         phrase = data.get('phrase', '').strip().lower()
+#         if not phrase:
+#             return DRFResponse({"error": "Missing 'phrase' in request."}, status=400)
+
+#         try:
+#             keyword = Keyword.objects.get(phrase__iexact=phrase)
+#             action_name = keyword.action.name
+#             question = keyword.questions.first().text if keyword.questions.exists() else "No question found."
+#             return DRFResponse({
+#                 "keyword": keyword.phrase,
+#                 "action": action_name,
+#                 "question": question
+#             })
+#         except Keyword.DoesNotExist:
+#             return DRFResponse({"error": "Keyword not found."}, status=404)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class GetQuestionFromPhraseView(View):
     def post(self, request):
         print("🔥 View hit")
         print("📦 Content-Type:", request.content_type)
         print("🧾 Raw Body:", request.body)
 
-        data = {}
-
-        # Attempt parsing from request.data
-        if hasattr(request, 'data') and isinstance(request.data, dict):
-            data = request.data
-            print("✅ Parsed from request.data:", data)
-
-        # Fallback: parse raw body
-        if not data:
-            try:
-                data = json.loads(request.body.decode('utf-8'))
-                print("🔄 Parsed from raw body:", data)
-            except Exception as e:
-                print("❌ Failed to parse JSON:", str(e))
-                return DRFResponse({"error": "Invalid JSON"}, status=400)
-
-        phrase = data.get('phrase', '').strip().lower()
-        if not phrase:
-            return DRFResponse({"error": "Missing 'phrase' in request."}, status=400)
-
         try:
-            keyword = Keyword.objects.get(phrase__iexact=phrase)
-            action_name = keyword.action.name
-            question = keyword.questions.first().text if keyword.questions.exists() else "No question found."
-            return DRFResponse({
-                "keyword": keyword.phrase,
-                "action": action_name,
-                "question": question
-            })
-        except Keyword.DoesNotExist:
-            return DRFResponse({"error": "Keyword not found."}, status=404)
+            data = json.loads(request.body.decode('utf-8'))
+            print("✅ Parsed JSON:", data)
+        except Exception as e:
+            print("❌ JSON Decode Error:", str(e))
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
 
+        phrase = data.get("phrase", "").strip().lower()
+        if not phrase:
+            return JsonResponse({"error": "Missing phrase"}, status=400)
 
+        # Dummy response for now
+        return JsonResponse({
+            "keyword": phrase,
+            "action": "Unlock",
+            "question": "What do you want to unlock?"
+        })
 
 
 
